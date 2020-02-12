@@ -16,6 +16,8 @@ import com.spring.food.domain.repository.CozinhaRepository;
 @Service
 public class CozinhaService {
 
+	private static final String COZINHA_EM_USO = "A cozinha de código %d está em uso e não pode ser excluída";
+	private static final String COZINHA_NAO_ENCONTRADA = "Não existe Cozinha com o código %d";
 	@Autowired
 	private CozinhaRepository repository;
 
@@ -39,12 +41,16 @@ public class CozinhaService {
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new ExcecaoEntidadeNaoEncontradaException(
-					String.format("Não existe Cozinha com o código %d", idCozinha));
+					String.format(COZINHA_NAO_ENCONTRADA, idCozinha));
 		} catch (DataIntegrityViolationException e) {
 			throw new ExcecaoEntidadeEmUsoException(
-					String.format("A cozinha de código %d está em uso e não pode ser excluída", idCozinha));
+					String.format(COZINHA_EM_USO, idCozinha));
 		}
 
+	}
+
+	public Cozinha buscaCozinhaExistente(Long idCozinha) {
+		return findById(idCozinha).orElseThrow(() -> new ExcecaoEntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA, idCozinha)));
 	}
 
 }

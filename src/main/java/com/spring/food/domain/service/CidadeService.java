@@ -16,6 +16,10 @@ import com.spring.food.domain.repository.EstadoRepository;
 @Service
 public class CidadeService {
 
+	private static final String ESTADO_INEXISTENTE = "O estado de código %d não existe";
+
+	private static final String CIDADE_INEXISTENTE = "Não existe cidade com o código %d";
+
 	@Autowired
 	private CidadeRepository repositoryCidade;
 
@@ -34,7 +38,7 @@ public class CidadeService {
 
 		Estado estado = repositoryEstado.findById(cidade.getEstado().getId()).orElseThrow(() -> {
 			throw new ExcecaoEntidadeNaoEncontradaException(
-					String.format("O estado de código %d não existe", cidade.getEstado().getId()));
+					String.format(ESTADO_INEXISTENTE, cidade.getEstado().getId()));
 		});
 
 		cidade.setEstado(estado);
@@ -49,8 +53,12 @@ public class CidadeService {
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new ExcecaoEntidadeNaoEncontradaException(
-					String.format("Não existe cidade com o código %d", idCidade));
+					String.format(CIDADE_INEXISTENTE, idCidade));
 		}
+	}
+	
+	public Cidade buscaCidadeExistente(Long idCidade) {
+		return findById(idCidade).orElseThrow(() -> new ExcecaoEntidadeNaoEncontradaException(String.format(CIDADE_INEXISTENTE, idCidade)));
 	}
 
 }

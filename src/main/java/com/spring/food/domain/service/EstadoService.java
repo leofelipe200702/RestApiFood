@@ -16,6 +16,8 @@ import com.spring.food.domain.repository.EstadoRepository;
 @Service
 public class EstadoService {
 
+	private static final String ESTADO_EM_USO = "O estado de código %d está em uso e não pode ser excluído";
+	private static final String ESTADO_INEXISTENTE = "Não existe estado com o código %d";
 	@Autowired
 	private EstadoRepository repositoryEstado;
 
@@ -39,12 +41,16 @@ public class EstadoService {
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new ExcecaoEntidadeNaoEncontradaException(
-					String.format("Não existe estado com o código %d", idEstado));
+					String.format(ESTADO_INEXISTENTE, idEstado));
 		} catch (DataIntegrityViolationException e) {
 			throw new ExcecaoEntidadeEmUsoException(
-					String.format("O estado de código %d está em uso e não pode ser excluído", idEstado));
+					String.format(ESTADO_EM_USO, idEstado));
 		}
 
+	}
+	
+	public Estado buscaEstadoeExistente(Long idEstado) {
+		return findById(idEstado).orElseThrow(() -> new ExcecaoEntidadeNaoEncontradaException(String.format(ESTADO_INEXISTENTE, idEstado)));
 	}
 
 }

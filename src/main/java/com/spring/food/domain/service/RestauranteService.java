@@ -18,6 +18,12 @@ import com.spring.food.domain.repository.RestauranteRepository;
 @Service
 public class RestauranteService {
 
+	private static final String RESTAURANTE_EM_USO = "O restaurante de código %d está em uso e não pode ser excluído";
+
+	private static final String COZINHA_NÃO_EXISTE = "A cozinha de código %d não existe";
+
+	private static final String RESTAURANTE_INEXISTENTE = "Não existe restaurante com o código %d";
+
 	@Autowired
 	private RestauranteRepository repositoryRestaurante;
 
@@ -36,7 +42,7 @@ public class RestauranteService {
 
 		Cozinha cozinha = repositoryCozinha.findById(pRestaurante.getCozinha().getId()).orElseThrow(() -> {
 			throw new ExcecaoEntidadeNaoEncontradaException(
-					String.format("A cozinha de código %d não existe", pRestaurante.getCozinha().getId()));
+					String.format(COZINHA_NÃO_EXISTE, pRestaurante.getCozinha().getId()));
 		});
 
 		pRestaurante.setCozinha(cozinha);
@@ -52,12 +58,16 @@ public class RestauranteService {
 
 		} catch (EmptyResultDataAccessException e) {
 			throw new ExcecaoEntidadeNaoEncontradaException(
-					String.format("Não existe restaurante com o código %d", idRestaurante));
+					String.format(RESTAURANTE_INEXISTENTE, idRestaurante));
 		} catch (DataIntegrityViolationException e) {
 			throw new ExcecaoEntidadeEmUsoException(
-					String.format("O restaurante de código %d está em uso e não pode ser excluído", idRestaurante));
+					String.format(RESTAURANTE_EM_USO, idRestaurante));
 		}
 
+	}
+	
+	public Restaurante buscaRestauranteExistente(Long idRestaurante) {
+		return findById(idRestaurante).orElseThrow(() -> new ExcecaoEntidadeNaoEncontradaException(String.format(RESTAURANTE_INEXISTENTE, idRestaurante)));
 	}
 
 }
