@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.food.domain.entity.Cidade;
+import com.spring.food.domain.exception.EstadoNaoEncontradoException;
+import com.spring.food.domain.exception.NegocioException;
 import com.spring.food.domain.service.CidadeService;
 
 @RestController
@@ -38,7 +40,14 @@ public class CidadeController {
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public Cidade criar(@RequestBody Cidade cidade) {
-		return service.save(cidade);
+				
+		try {
+			return service.save(cidade);
+		} catch (EstadoNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(),e);
+		}
+		
+		
 	}
 
 	@PutMapping("/{idCidade}")
@@ -46,7 +55,13 @@ public class CidadeController {
 		Cidade cidadeAtual = service.buscaCidadeExistente(idCidade);
 		// copia as propriedades de um Bean para o outro
 		BeanUtils.copyProperties(pCidade, cidadeAtual, "id");
-		return service.save(cidadeAtual);
+		
+		try {
+			return service.save(cidadeAtual);
+		} catch (EstadoNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(),e);
+		}
+		
 	}
 	
 	@DeleteMapping("/{idCidade}")
@@ -54,5 +69,4 @@ public class CidadeController {
 	public void remove(@PathVariable("idCidade") Long idCidade) {
 		service.remove(idCidade);
 	}
-
 }

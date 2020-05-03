@@ -76,8 +76,8 @@ public class CozinhaController {
 	 * 
 	 * return ResponseEntity.noContent().build();
 	 * 
-	 * } catch (ExcecaoEntidadeNaoEncontradaException e) { return
-	 * ResponseEntity.notFound().build(); } catch (ExcecaoEntidadeEmUsoException e)
+	 * } catch (EntidadeNaoEncontradaException e) { return
+	 * ResponseEntity.notFound().build(); } catch (EntidadeEmUsoException e)
 	 * { return ResponseEntity.status(HttpStatus.CONFLICT).build(); } }
 	 */
 
@@ -89,9 +89,9 @@ public class CozinhaController {
 	 * 
 	 * service.remove(idCozinha);
 	 * 
-	 * } catch (ExcecaoEntidadeNaoEncontradaException e) { throw new
+	 * } catch (EntidadeNaoEncontradaException e) { throw new
 	 * ResponseStatusException(HttpStatus.NO_CONTENT,e.getMessage()); } catch
-	 * (ExcecaoEntidadeEmUsoException e) { throw new
+	 * (EntidadeEmUsoException e) { throw new
 	 * ResponseStatusException(HttpStatus.CONFLICT,e.getMessage()); } }
 	 */
 
